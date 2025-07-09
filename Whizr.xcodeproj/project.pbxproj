@@ -1,0 +1,382 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		CE2B7D2C2C8A5F0A00123456 /* WhizrApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2B7D2B2C8A5F0A00123456 /* WhizrApp.swift */; };
+		CE2B7D2E2C8A5F0A00123456 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2B7D2D2C8A5F0A00123456 /* ContentView.swift */; };
+		CE2B7D302C8A5F0B00123456 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CE2B7D2F2C8A5F0B00123456 /* Assets.xcassets */; };
+		CE2B7D332C8A5F0B00123456 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CE2B7D322C8A5F0B00123456 /* Preview Assets.xcassets */; };
+		CE2B7D3A2C8A5F1500123456 /* HotkeyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2B7D392C8A5F1500123456 /* HotkeyManager.swift */; };
+		CE2B7D3C2C8A5F2000123456 /* LLMClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2B7D3B2C8A5F2000123456 /* LLMClient.swift */; };
+		CE2B7D3E2C8A5F2500123456 /* TextInjector.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2B7D3D2C8A5F2500123456 /* TextInjector.swift */; };
+		CE2B7D402C8A5F2A00123456 /* PermissionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2B7D3F2C8A5F2A00123456 /* PermissionManager.swift */; };
+		CE2B7D422C8A5F2F00123456 /* PreferencesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2B7D412C8A5F2F00123456 /* PreferencesManager.swift */; };
+		CE2B7D442C8A5F3400123456 /* ContextDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2B7D432C8A5F3400123456 /* ContextDetector.swift */; };
+		CE2B7D462C8A5F3900123456 /* WhizrPopupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2B7D452C8A5F3900123456 /* WhizrPopupView.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		CE2B7D282C8A5F0A00123456 /* Whizr.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Whizr.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		CE2B7D2B2C8A5F0A00123456 /* WhizrApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhizrApp.swift; sourceTree = "<group>"; };
+		CE2B7D2D2C8A5F0A00123456 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		CE2B7D2F2C8A5F0B00123456 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		CE2B7D322C8A5F0B00123456 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		CE2B7D342C8A5F0B00123456 /* Whizr.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Whizr.entitlements; sourceTree = "<group>"; };
+		CE2B7D392C8A5F1500123456 /* HotkeyManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HotkeyManager.swift; sourceTree = "<group>"; };
+		CE2B7D3B2C8A5F2000123456 /* LLMClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LLMClient.swift; sourceTree = "<group>"; };
+		CE2B7D3D2C8A5F2500123456 /* TextInjector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextInjector.swift; sourceTree = "<group>"; };
+		CE2B7D3F2C8A5F2A00123456 /* PermissionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionManager.swift; sourceTree = "<group>"; };
+		CE2B7D412C8A5F2F00123456 /* PreferencesManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesManager.swift; sourceTree = "<group>"; };
+		CE2B7D432C8A5F3400123456 /* ContextDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContextDetector.swift; sourceTree = "<group>"; };
+		CE2B7D452C8A5F3900123456 /* WhizrPopupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhizrPopupView.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		CE2B7D252C8A5F0A00123456 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		CE2B7D1F2C8A5F0A00123456 = {
+			isa = PBXGroup;
+			children = (
+				CE2B7D2A2C8A5F0A00123456 /* Whizr */,
+				CE2B7D292C8A5F0A00123456 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		CE2B7D292C8A5F0A00123456 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				CE2B7D282C8A5F0A00123456 /* Whizr.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		CE2B7D2A2C8A5F0A00123456 /* Whizr */ = {
+			isa = PBXGroup;
+			children = (
+				CE2B7D2B2C8A5F0A00123456 /* WhizrApp.swift */,
+				CE2B7D2D2C8A5F0A00123456 /* ContentView.swift */,
+				CE2B7D392C8A5F1500123456 /* HotkeyManager.swift */,
+				CE2B7D3B2C8A5F2000123456 /* LLMClient.swift */,
+				CE2B7D3D2C8A5F2500123456 /* TextInjector.swift */,
+				CE2B7D3F2C8A5F2A00123456 /* PermissionManager.swift */,
+				CE2B7D412C8A5F2F00123456 /* PreferencesManager.swift */,
+				CE2B7D432C8A5F3400123456 /* ContextDetector.swift */,
+				CE2B7D452C8A5F3900123456 /* WhizrPopupView.swift */,
+				CE2B7D2F2C8A5F0B00123456 /* Assets.xcassets */,
+				CE2B7D342C8A5F0B00123456 /* Whizr.entitlements */,
+				CE2B7D312C8A5F0B00123456 /* Preview Content */,
+			);
+			path = Whizr;
+			sourceTree = "<group>";
+		};
+		CE2B7D312C8A5F0B00123456 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				CE2B7D322C8A5F0B00123456 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		CE2B7D272C8A5F0A00123456 /* Whizr */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CE2B7D372C8A5F0B00123456 /* Build configuration list for PBXNativeTarget "Whizr" */;
+			buildPhases = (
+				CE2B7D242C8A5F0A00123456 /* Sources */,
+				CE2B7D252C8A5F0A00123456 /* Frameworks */,
+				CE2B7D262C8A5F0A00123456 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Whizr;
+			packageProductDependencies = (
+			);
+			productName = Whizr;
+			productReference = CE2B7D282C8A5F0A00123456 /* Whizr.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		CE2B7D202C8A5F0A00123456 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1600;
+				LastUpgradeCheck = 1600;
+				TargetAttributes = {
+					CE2B7D272C8A5F0A00123456 = {
+						CreatedOnToolsVersion = 16.0;
+					};
+				};
+			};
+			buildConfigurationList = CE2B7D232C8A5F0A00123456 /* Build configuration list for PBXProject "Whizr" */;
+			compatibilityVersion = "Xcode 15.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = CE2B7D1F2C8A5F0A00123456;
+			packageReferences = (
+			);
+			productRefGroup = CE2B7D292C8A5F0A00123456 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				CE2B7D272C8A5F0A00123456 /* Whizr */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		CE2B7D262C8A5F0A00123456 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CE2B7D332C8A5F0B00123456 /* Preview Assets.xcassets in Resources */,
+				CE2B7D302C8A5F0B00123456 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		CE2B7D242C8A5F0A00123456 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CE2B7D2E2C8A5F0A00123456 /* ContentView.swift in Sources */,
+				CE2B7D3A2C8A5F1500123456 /* HotkeyManager.swift in Sources */,
+				CE2B7D3C2C8A5F2000123456 /* LLMClient.swift in Sources */,
+				CE2B7D3E2C8A5F2500123456 /* TextInjector.swift in Sources */,
+				CE2B7D402C8A5F2A00123456 /* PermissionManager.swift in Sources */,
+				CE2B7D422C8A5F2F00123456 /* PreferencesManager.swift in Sources */,
+				CE2B7D442C8A5F3400123456 /* ContextDetector.swift in Sources */,
+				CE2B7D462C8A5F3900123456 /* WhizrPopupView.swift in Sources */,
+				CE2B7D2C2C8A5F0A00123456 /* WhizrApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		CE2B7D352C8A5F0B00123456 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		CE2B7D362C8A5F0B00123456 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+			};
+			name = Release;
+		};
+		CE2B7D382C8A5F0B00123456 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Whizr/Whizr.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"Whizr/Preview Content\"";
+				DEVELOPMENT_TEAM = "";
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Whizr";
+				INFOPLIST_KEY_LSUIElement = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.whizr.Whizr;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		CE2B7D392C8A5F0B00123456 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Whizr/Whizr.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"Whizr/Preview Content\"";
+				DEVELOPMENT_TEAM = "";
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Whizr";
+				INFOPLIST_KEY_LSUIElement = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.whizr.Whizr;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		CE2B7D232C8A5F0A00123456 /* Build configuration list for PBXProject "Whizr" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CE2B7D352C8A5F0B00123456 /* Debug */,
+				CE2B7D362C8A5F0B00123456 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CE2B7D372C8A5F0B00123456 /* Build configuration list for PBXNativeTarget "Whizr" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CE2B7D382C8A5F0B00123456 /* Debug */,
+				CE2B7D392C8A5F0B00123456 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = CE2B7D202C8A5F0A00123456 /* Project object */;
+} 
