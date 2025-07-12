@@ -17,6 +17,7 @@
 		CE2B7D402C8A5F2A00123456 /* PermissionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2B7D3F2C8A5F2A00123456 /* PermissionManager.swift */; };
 		CE2B7D422C8A5F2F00123456 /* PreferencesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2B7D412C8A5F2F00123456 /* PreferencesManager.swift */; };
 		CE2B7D442C8A5F3400123456 /* ContextDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2B7D432C8A5F3400123456 /* ContextDetector.swift */; };
+		4D78BC281E914ACF86FA565C /* ContextPromptGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20583C49BC52464E9C1DC946 /* ContextPromptGenerator.swift */; };
 		CE2B7D462C8A5F3900123456 /* WhizrPopupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2B7D452C8A5F3900123456 /* WhizrPopupView.swift */; };
 /* End PBXBuildFile section */
 
@@ -33,6 +34,7 @@
 		CE2B7D3F2C8A5F2A00123456 /* PermissionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionManager.swift; sourceTree = "<group>"; };
 		CE2B7D412C8A5F2F00123456 /* PreferencesManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesManager.swift; sourceTree = "<group>"; };
 		CE2B7D432C8A5F3400123456 /* ContextDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContextDetector.swift; sourceTree = "<group>"; };
+		20583C49BC52464E9C1DC946 /* ContextPromptGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContextPromptGenerator.swift; sourceTree = "<group>"; };
 		CE2B7D452C8A5F3900123456 /* WhizrPopupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhizrPopupView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -74,6 +76,7 @@
 				CE2B7D3F2C8A5F2A00123456 /* PermissionManager.swift */,
 				CE2B7D412C8A5F2F00123456 /* PreferencesManager.swift */,
 				CE2B7D432C8A5F3400123456 /* ContextDetector.swift */,
+				20583C49BC52464E9C1DC946 /* ContextPromptGenerator.swift */,
 				CE2B7D452C8A5F3900123456 /* WhizrPopupView.swift */,
 				CE2B7D2F2C8A5F0B00123456 /* Assets.xcassets */,
 				CE2B7D342C8A5F0B00123456 /* Whizr.entitlements */,
@@ -171,6 +174,7 @@
 				CE2B7D402C8A5F2A00123456 /* PermissionManager.swift in Sources */,
 				CE2B7D422C8A5F2F00123456 /* PreferencesManager.swift in Sources */,
 				CE2B7D442C8A5F3400123456 /* ContextDetector.swift in Sources */,
+				4D78BC281E914ACF86FA565C /* ContextPromptGenerator.swift in Sources */,
 				CE2B7D462C8A5F3900123456 /* WhizrPopupView.swift in Sources */,
 				CE2B7D2C2C8A5F0A00123456 /* WhizrApp.swift in Sources */,
 			);
@@ -307,7 +311,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Whizr/Preview Content\"";
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 759689Y3QN;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -336,7 +340,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Whizr/Preview Content\"";
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 759689Y3QN;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;

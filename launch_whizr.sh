@@ -1,16 +1,46 @@
 #!/bin/bash
 
-echo "🚀 Launching Whizr..."
+# Parse command line arguments
+DEBUG_MODE=false
+CONFIGURATION="Release"
 
-# Build the app first
-echo "📦 Building Whizr..."
-xcodebuild -project Whizr.xcodeproj -scheme Whizr -configuration Debug build
+if [[ "$1" == "--debug" ]]; then
+    DEBUG_MODE=true
+    CONFIGURATION="Debug"
+    echo "🔧 Debug mode enabled"
+else
+    echo "🚀 Release mode (use --debug for debug build)"
+fi
+
+echo "🚀 Launching Whizr ($CONFIGURATION)..."
+
+# Kill any existing Whizr processes
+echo "🛑 Stopping any running Whizr instances..."
+pkill -f "Whizr.app" 2>/dev/null || true
+killall "Whizr" 2>/dev/null || true
+sleep 1
+
+# Build the app
+echo "📦 Building Whizr ($CONFIGURATION)..."
+xcodebuild -project Whizr.xcodeproj -scheme Whizr -configuration $CONFIGURATION build
 
 if [ $? -eq 0 ]; then
     echo "✅ Build successful!"
     
-    # Find the app path
-    APP_PATH="/Users/ricardofernandes/Library/Developer/Xcode/DerivedData/Whizr-fnqwztihyozrphdxfzmtauqiqmos/Build/Products/Debug/Whizr.app"
+    # Find the app path dynamically
+    DERIVED_DATA_PATH="$HOME/Library/Developer/Xcode/DerivedData"
+    APP_PATH=$(find "$DERIVED_DATA_PATH" -name "Whizr.app" -path "*/$CONFIGURATION/*" | head -1)
+    
+    if [ -z "$APP_PATH" ]; then
+        echo "⚠️  Could not find built app, trying fallback location..."
+        # Fallback: try to find any Whizr.app in DerivedData
+        APP_PATH=$(find "$DERIVED_DATA_PATH" -name "Whizr.app" | head -1)
+    fi
+    
+    if [ -z "$APP_PATH" ]; then
+        echo "❌ Could not locate Whizr.app after build!"
+        exit 1
+    fi
     
     echo "📍 App location: $APP_PATH"
     
@@ -36,6 +66,9 @@ if [ $? -eq 0 ]; then
     echo "✨ Whizr should now be running in your menu bar!"
     echo "   Press ⌘+Shift+Space to test the hotkey"
     echo ""
+    if [ "$DEBUG_MODE" = true ]; then
+        echo "🔧 Debug build - check Console.app for detailed logs"
+    fi
     echo "💡 Only Accessibility permission is needed - the app will guide you through setup"
     
 else

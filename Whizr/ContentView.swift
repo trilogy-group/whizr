@@ -1,209 +1,221 @@
 import SwiftUI
+import AppKit
+import os.log
 
 struct ContentView: View {
-    @EnvironmentObject var hotkeyManager: HotkeyManager
     @EnvironmentObject var llmClient: LLMClient
-    @EnvironmentObject var permissionManager: PermissionManager
     @EnvironmentObject var preferencesManager: PreferencesManager
     @EnvironmentObject var contextDetector: ContextDetector
     @EnvironmentObject var textInjector: TextInjector
+    @EnvironmentObject var hotkeyManager: HotkeyManager
+    @EnvironmentObject var contextPromptGenerator: ContextPromptGenerator
     @EnvironmentObject var popupManager: PopupWindowManager
     
-    @State private var testPrompt = ""
-    @State private var testResponse = ""
+    // Add logger for structured logging
+    private let logger = Logger(subsystem: "com.whizr.Whizr", category: "ContentView")
     
     var body: some View {
-        VStack(spacing: 16) {
-            // Header
-            HStack {
-                Image("MenuBarIcon")
-                    .resizable()
-                    .frame(width: 24, height: 24)
-                    .foregroundColor(.accentColor)
-                Text("Whizr")
-                    .font(.headline)
-                    .fontWeight(.semibold)
-                    .foregroundColor(.primary)
+        VStack(spacing: 20) {
+            headerSection
+            
+            // Status section
+            VStack(alignment: .leading, spacing: 10) {
+                statusRow("Hotkey", hotkeyManager.isEnabled ? "Active" : "Inactive", hotkeyManager.isEnabled)
+                statusRow("LLM Client", llmClient.isProcessing ? "Processing" : (llmClient.isConfigured ? "Ready" : "Not Configured"), llmClient.isConfigured && !llmClient.isProcessing)
+                statusRow("Text Injection", "Ready", true)
             }
-            .padding(.top, 8)
+            .padding()
+            .background(Color(NSColor.controlBackgroundColor))
+            .cornerRadius(10)
             
-            // Status indicators
-            VStack(alignment: .leading, spacing: 8) {
-                statusRow("Hotkey", hotkeyManager.isListening ? "Active" : "Inactive", hotkeyManager.isListening)
-                statusRow("Accessibility", permissionManager.hasAccessibilityPermission ? "Granted" : "Needed", permissionManager.hasAccessibilityPermission)
-                statusRow("LLM", llmClient.isConfigured ? "Ready" : "Not configured", llmClient.isConfigured)
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            
-            Divider()
-            
-            // Note about permissions
-            if !permissionManager.hasAllPermissions {
-                Text("💡 Only Accessibility permission is needed on macOS 15.5+")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-                    .padding(.horizontal)
-            }
-            
-            // Test section
-            VStack(alignment: .leading, spacing: 8) {
-                Text("Test LLM")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-                
-                TextField("Enter test prompt", text: $testPrompt)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                
-                Button("Test") {
-                    testLLM()
-                }
-                .disabled(testPrompt.isEmpty || !llmClient.isConfigured)
-                
-                if !testResponse.isEmpty {
-                    Text(testResponse)
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                        .padding(.top, 4)
-                }
-            }
-            
-            Divider()
-            
-            // Actions
-            VStack(spacing: 8) {
-                if !permissionManager.hasAllPermissions {
-                    Button("Request Permissions") {
-                        requestPermissions()
-                    }
-                    .buttonStyle(.borderedProminent)
-                }
-                
-                if !hotkeyManager.isListening && permissionManager.hasAccessibilityPermission {
-                    Button("Restart Hotkey Listener") {
-                        hotkeyManager.restartHotkeyListener()
-                    }
-                    .buttonStyle(.bordered)
-                }
-                
-                Button("Preferences") {
-                    openPreferencesWindow()
-                }
-                .buttonStyle(.bordered)
-                
-                Button("Quit") {
-                    NSApplication.shared.terminate(nil)
-                }
-                .buttonStyle(.bordered)
-            }
+            // Embedded preferences section
+            PreferencesSection()
+                .environmentObject(preferencesManager)
+                .environmentObject(llmClient)
             
             Spacer()
+            
+            // Quit Button
+            Button(action: {
+                NSApp.terminate(nil)
+            }) {
+                Text("Quit Whizr")
+                    .foregroundColor(.white)
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 8)
+                    .background(Color.red.opacity(0.85))
+                    .cornerRadius(8)
+            }
+            .buttonStyle(PlainButtonStyle())
+            .padding(.bottom)
         }
         .padding()
-        .frame(width: 280, height: 450)
-        .onReceive(NotificationCenter.default.publisher(for: .hotkeyPressed)) { _ in
-            handleHotkeyPress()
+        .onAppear {
+            logger.info("🪟 ContentView appeared (config window opened)")
+            // Hotkey listener now starts automatically on app launch, not here
         }
-        .onReceive(NotificationCenter.default.publisher(for: .reopenPopup)) { notification in
-            handleReopenPopup(notification: notification)
+        // Notification listeners removed - now handled by AppController
+    }
+    
+    private var headerSection: some View {
+        HStack {
+            Image("MenuBarIcon")
+                .resizable()
+                .frame(width: 24, height: 24)
+                .foregroundColor(.accentColor)
+            Text("Whizr")
+                .font(.headline)
+                .fontWeight(.semibold)
+                .foregroundColor(.primary)
         }
+        .padding(.top, 8)
     }
     
     private func statusRow(_ title: String, _ status: String, _ isActive: Bool) -> some View {
         HStack {
             Circle()
-                .fill(isActive ? .green : .red)
-                .frame(width: 6, height: 6)
+                .fill(isActive ? Color.green : Color.red)
+                .frame(width: 8, height: 8)
             Text(title)
                 .font(.caption)
-                .foregroundColor(.primary)
+                .fontWeight(.medium)
             Spacer()
             Text(status)
                 .font(.caption)
                 .foregroundColor(.secondary)
         }
     }
-    
+}
 
+// Embedded preferences section for main window
+struct PreferencesSection: View {
+    @EnvironmentObject var preferencesManager: PreferencesManager
+    @EnvironmentObject var llmClient: LLMClient
     
-    private func testLLM() {
-        Task {
-            do {
-                testResponse = try await llmClient.generateText(prompt: testPrompt)
-            } catch {
-                testResponse = "Error: \(error.localizedDescription)"
+    @State private var selectedProvider: LLMClient.LLMProvider = .openai
+    @State private var apiKey = ""
+    @State private var model = ""
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 15) {
+            Text("LLM Configuration")
+                .font(.headline)
+                .foregroundColor(.primary)
+            
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Provider")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+                
+                Picker("Provider", selection: $selectedProvider) {
+                    Text("OpenAI").tag(LLMClient.LLMProvider.openai)
+                    Text("Anthropic").tag(LLMClient.LLMProvider.anthropic)
+                    Text("Local (Ollama)").tag(LLMClient.LLMProvider.local)
+                }
+                .pickerStyle(.segmented)
+                .onChange(of: selectedProvider) { newProvider in
+                    loadSettingsForProvider(newProvider)
+                }
+                
+                VStack(alignment: .leading, spacing: 6) {
+                    Text(selectedProvider == .local ? "Base URL" : "API Key")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                    
+                    if selectedProvider == .local {
+                        TextField("http://localhost:11434", text: $apiKey)
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                    } else {
+                        SecureField("Enter API Key", text: $apiKey)
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                    }
+                }
+                
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("Model")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                    TextField(modelPlaceholder, text: $model)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                }
+                
+                Button("Save Configuration") {
+                    savePreferences()
+                }
+                .buttonStyle(.borderedProminent)
+                .controlSize(.small)
             }
         }
-    }
-    
-    private func requestPermissions() {
-        permissionManager.requestPermissions()
-        
-        // Show system preferences if needed
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            if !permissionManager.hasAllPermissions {
-                permissionManager.openSystemPreferences()
-            }
+        .padding()
+        .background(Color(.controlBackgroundColor).opacity(0.5))
+        .cornerRadius(10)
+        .onAppear {
+            loadCurrentSettings()
         }
     }
     
-    private func openPreferencesWindow() {
-        // Check if preferences window already exists
-        if let existingWindow = NSApplication.shared.windows.first(where: { $0.title == "Preferences" }) {
-            existingWindow.makeKeyAndOrderFront(nil)
-            NSApplication.shared.activate(ignoringOtherApps: true)
-            return
+    private var modelPlaceholder: String {
+        switch selectedProvider {
+        case .openai: return "gpt-4o-mini"
+        case .anthropic: return "claude-3-haiku-20240307"
+        case .local: return "llama3.2:3b"
+        }
+    }
+    
+    private func loadCurrentSettings() {
+        selectedProvider = preferencesManager.llmProvider
+        
+        switch selectedProvider {
+        case .openai:
+            apiKey = preferencesManager.openaiApiKey
+            model = preferencesManager.openaiModel.isEmpty ? "gpt-4o-mini" : preferencesManager.openaiModel
+        case .anthropic:
+            apiKey = preferencesManager.anthropicApiKey
+            model = preferencesManager.anthropicModel.isEmpty ? "claude-3-haiku-20240307" : preferencesManager.anthropicModel
+        case .local:
+            apiKey = preferencesManager.ollamaHost.isEmpty ? "http://localhost:11434" : preferencesManager.ollamaHost
+            model = preferencesManager.ollamaModel.isEmpty ? "llama3.2:3b" : preferencesManager.ollamaModel
+        }
+    }
+    
+    private func loadSettingsForProvider(_ provider: LLMClient.LLMProvider) {
+        switch provider {
+        case .openai:
+            apiKey = preferencesManager.openaiApiKey
+            model = preferencesManager.openaiModel.isEmpty ? "gpt-4o-mini" : preferencesManager.openaiModel
+        case .anthropic:
+            apiKey = preferencesManager.anthropicApiKey
+            model = preferencesManager.anthropicModel.isEmpty ? "claude-3-haiku-20240307" : preferencesManager.anthropicModel
+        case .local:
+            apiKey = preferencesManager.ollamaHost.isEmpty ? "http://localhost:11434" : preferencesManager.ollamaHost
+            model = preferencesManager.ollamaModel.isEmpty ? "llama3.2:3b" : preferencesManager.ollamaModel
+        }
+    }
+    
+    private func savePreferences() {
+        preferencesManager.llmProvider = selectedProvider
+        
+        switch selectedProvider {
+        case .openai:
+            preferencesManager.openaiApiKey = apiKey
+            preferencesManager.openaiModel = model
+        case .anthropic:
+            preferencesManager.anthropicApiKey = apiKey
+            preferencesManager.anthropicModel = model
+        case .local:
+            preferencesManager.ollamaHost = apiKey
+            preferencesManager.ollamaModel = model
         }
         
-        // Create new preferences window
-        let preferencesView = SimplePreferencesView()
-            .environmentObject(preferencesManager)
-            .environmentObject(llmClient)
+        preferencesManager.savePreferences()
         
-        let hostingController = NSHostingController(rootView: preferencesView)
-        let window = NSWindow(
-            contentViewController: hostingController
-        )
+        // Update UserDefaults with the correct keys that LLMClient expects
+        UserDefaults.standard.set(apiKey, forKey: "llm_api_key")
+        UserDefaults.standard.set(selectedProvider.rawValue, forKey: "llm_provider")
+        UserDefaults.standard.set(model, forKey: "llm_model")
         
-        window.title = "Preferences"
-        window.setContentSize(NSSize(width: 400, height: 400))
-        window.styleMask = [.titled, .closable]
-        window.center()
-        window.makeKeyAndOrderFront(nil)
-        
-        NSApplication.shared.activate(ignoringOtherApps: true)
-    }
-    
-    private func handleHotkeyPress() {
-        print("🎯 Hotkey triggered! Showing popup...")
-        
-        // Show the popup window for user input
-        popupManager.showPopup(
-            llmClient: llmClient,
-            preferencesManager: preferencesManager,
-            contextDetector: contextDetector,
-            textInjector: textInjector
-        )
-    }
-    
-    private func handleReopenPopup(notification: Notification) {
-        print("🎯 Reopening popup after screenshot...")
-        
-        // Extract all state from notification
-        let originalFocusedApp = notification.userInfo?["originalFocusedApp"] as? NSRunningApplication
-        let screenshotPath = notification.userInfo?["screenshotPath"] as? String
-        let userInput = notification.userInfo?["userInput"] as? String ?? ""
-        let includeClipboard = notification.userInfo?["includeClipboard"] as? Bool ?? true
-        
-        popupManager.showPopup(
-            llmClient: llmClient,
-            preferencesManager: preferencesManager,
-            contextDetector: contextDetector,
-            textInjector: textInjector,
-            originalFocusedApp: originalFocusedApp,
-            screenshotPath: screenshotPath,
-            userInput: userInput,
-            includeClipboard: includeClipboard
-        )
+        // Reconfigure LLMClient
+        llmClient.configure()
     }
 }
 
@@ -339,12 +351,17 @@ struct SimplePreferencesView: View {
 }
 
 #Preview {
-    ContentView()
-        .environmentObject(HotkeyManager())
+    let contextDetector = ContextDetector()
+    let hotkeyManager = HotkeyManager(contextDetector: contextDetector)
+    let popupManager = PopupWindowManager()
+    
+    return ContentView()
+        .environmentObject(hotkeyManager)
         .environmentObject(LLMClient())
         .environmentObject(PermissionManager())
         .environmentObject(PreferencesManager())
-        .environmentObject(ContextDetector())
+        .environmentObject(contextDetector)
         .environmentObject(TextInjector())
-        .environmentObject(PopupWindowManager())
+        .environmentObject(popupManager)
+        .environmentObject(ContextPromptGenerator())
 } 

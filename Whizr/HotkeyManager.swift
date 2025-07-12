@@ -1,129 +1,101 @@
 import SwiftUI
 import Carbon
 import ApplicationServices
+import os.log
 
 class HotkeyManager: ObservableObject {
-    @Published var isListening = false
+    @Published var isEnabled = false
     
     private var eventTap: CFMachPort?
     private var runLoopSource: CFRunLoopSource?
+    private let hotkey = (key: 49, modifiers: [CGEventFlags.maskCommand, CGEventFlags.maskShift]) // Space key with Cmd+Shift
+    private let logger = Logger(subsystem: "com.whizr.Whizr", category: "HotkeyManager")
     
-    private let hotkey = HotkeyDefinition(
-        key: kVK_Space,
-        modifiers: [.command, .shift]
-    )
+    // Use shared context detector for cached context
+    private let contextDetector: ContextDetector
     
-    var onHotkeyPressed: (() -> Void)?
-    
-    init() {
-        setupHotkey()
+    init(contextDetector: ContextDetector) {
+        self.contextDetector = contextDetector
+        logger.info("🚀 HotkeyManager initialized with shared ContextDetector")
+        setupEventTap()
         
-        // Listen for permission changes
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(permissionsChanged),
-            name: .permissionsChanged,
-            object: nil
-        )
+        // Auto-start listening if permissions are already available
+        if AXIsProcessTrusted() {
+            DispatchQueue.main.async {
+                self.startListening()
+                print("✅ Auto-started hotkey listener on init (permissions already available)")
+            }
+        } else {
+            print("⚠️ Accessibility permissions not available on init - will start when granted")
+        }
     }
     
     deinit {
+        logger.info("🛑 HotkeyManager deinitialized")
         stopListening()
-        NotificationCenter.default.removeObserver(self)
     }
     
-    @objc private func permissionsChanged() {
-        print("🔄 Permissions changed - restarting hotkey listener...")
+    func startListening() {
+        guard let eventTap = eventTap else {
+            logger.error("❌ Cannot start listening: eventTap is nil")
+            return
+        }
         
-        // Stop current listener
-        stopListening()
+        logger.info("🎧 Starting hotkey listening...")
         
-        // Wait a bit then restart
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            self.setupHotkey()
+        CGEvent.tapEnable(tap: eventTap, enable: true)
+        
+        if let runLoopSource = runLoopSource {
+            CFRunLoopAddSource(CFRunLoopGetCurrent(), runLoopSource, .commonModes)
+        }
+        
+        DispatchQueue.main.async {
+            self.isEnabled = true
+            self.logger.info("✅ Hotkey listening enabled")
         }
     }
     
-    func setupHotkey() {
-        guard !isListening else { return }
+    func stopListening() {
+        logger.info("🛑 Stopping hotkey listening...")
         
-        // Set up the callback for when hotkey is pressed
-        onHotkeyPressed = { [weak self] in
-            self?.handleHotkeyPress()
+        if let runLoopSource = runLoopSource {
+            CFRunLoopRemoveSource(CFRunLoopGetCurrent(), runLoopSource, .commonModes)
         }
         
-        startListening()
-    }
-    
-    func restartHotkeyListener() {
-        print("🔄 Manually restarting hotkey listener...")
-        stopListening()
+        if let eventTap = eventTap {
+            CGEvent.tapEnable(tap: eventTap, enable: false)
+        }
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            self.setupHotkey()
+        DispatchQueue.main.async {
+            self.isEnabled = false
+            self.logger.info("❌ Hotkey listening disabled")
         }
     }
     
-    private func startListening() {
-        print("🔑 Starting hotkey listener...")
+    private func setupEventTap() {
+        logger.info("🔧 Setting up event tap...")
         
-        // Create event tap for global key monitoring
         let eventMask = (1 << CGEventType.keyDown.rawValue)
         
-        eventTap = CGEvent.tapCreate(
+        guard let eventTap = CGEvent.tapCreate(
             tap: .cgSessionEventTap,
             place: .headInsertEventTap,
             options: .defaultTap,
             eventsOfInterest: CGEventMask(eventMask),
-            callback: { (proxy, type, event, refcon) -> Unmanaged<CGEvent>? in
+            callback: { (proxy, type, event, refcon) in
                 let manager = Unmanaged<HotkeyManager>.fromOpaque(refcon!).takeUnretainedValue()
                 return manager.handleEvent(proxy: proxy, type: type, event: event)
             },
-            userInfo: Unmanaged.passUnretained(self).toOpaque()
-        )
-        
-        guard let eventTap = eventTap else {
-            print("❌ Failed to create event tap - Input Monitoring permission likely missing!")
-            DispatchQueue.main.async {
-                self.isListening = false
-            }
+            userInfo: UnsafeMutableRawPointer(Unmanaged.passUnretained(self).toOpaque())
+        ) else {
+            logger.error("❌ Failed to create event tap")
             return
         }
         
-        print("✅ Event tap created successfully")
+        self.eventTap = eventTap
+        self.runLoopSource = CFMachPortCreateRunLoopSource(kCFAllocatorDefault, eventTap, 0)
         
-        // Add to run loop
-        runLoopSource = CFMachPortCreateRunLoopSource(kCFAllocatorDefault, eventTap, 0)
-        guard let runLoopSource = runLoopSource else {
-            print("❌ Failed to create run loop source")
-            return
-        }
-        
-        // Use common modes to ensure CGEvents can be processed properly
-        CFRunLoopAddSource(CFRunLoopGetCurrent(), runLoopSource, .commonModes)
-        
-        // Enable the event tap
-        CGEvent.tapEnable(tap: eventTap, enable: true)
-        
-        print("✅ Hotkey manager is now listening for ⌘+Shift+Space")
-        
-        DispatchQueue.main.async {
-            self.isListening = true
-        }
-    }
-    
-    private func stopListening() {
-        if let eventTap = eventTap, let runLoopSource = runLoopSource {
-            CGEvent.tapEnable(tap: eventTap, enable: false)
-            CFRunLoopRemoveSource(CFRunLoopGetCurrent(), runLoopSource, .commonModes)
-            CFMachPortInvalidate(eventTap)
-            self.eventTap = nil
-            self.runLoopSource = nil
-        }
-        
-        DispatchQueue.main.async {
-            self.isListening = false
-        }
+        logger.info("✅ Event tap created successfully")
     }
     
     private func handleEvent(proxy: CGEventTapProxy, type: CGEventType, event: CGEvent) -> Unmanaged<CGEvent>? {
@@ -141,51 +113,96 @@ class HotkeyManager: ObservableObject {
         
         // Check if this matches our hotkey
         if checkModifiers(flags: flags) {
-            print("🎯 HOTKEY MATCH! ⌘+Shift+Space detected")
+            logger.info("🎯 HOTKEY MATCH! ⌘+Shift+Space detected")
+            
+            // Get cached context immediately (no extraction during hotkey!)
+            let cachedContext = getCachedContextForHotkey()
+            
+            logger.info("⚡ DEBUG: Using cached context: \(cachedContext != nil ? "VALID" : "NIL", privacy: .public)")
             
             // Call the hotkey handler on a background queue to avoid blocking
             DispatchQueue.global(qos: .userInitiated).async {
                 DispatchQueue.main.async {
-                    self.onHotkeyPressed?()
+                    // Pass the cached context to the handler
+                    self.logger.info("⚡ DEBUG: About to call onHotkeyPressed with cached context")
+                    NotificationCenter.default.post(
+                        name: .hotkeyPressed,
+                        object: cachedContext  // Pass the cached context
+                    )
                 }
             }
             
-            // Consume the event (don't pass it through)
+            // Consume the event to prevent it from being processed further
             return nil
         }
         
-        // Pass through all other events
         return Unmanaged.passUnretained(event)
+    }
+    
+    /// Get cached context for hotkey usage (instant!)
+    private func getCachedContextForHotkey() -> ContextInfo? {
+        logger.info("⚡ Getting cached context for hotkey...")
+        
+        // Get cached context from shared ContextDetector
+        if let cached = contextDetector.getCachedContext() {
+            logger.info("✅ Using cached context: \(cached.selectedText.count, privacy: .public) chars from \(cached.applicationName, privacy: .public)")
+            return cached
+        }
+        
+        // Fallback: create minimal context if no cache available
+        logger.warning("⚠️ No cached context available, creating minimal context")
+        guard let frontApp = NSWorkspace.shared.frontmostApplication else {
+            return nil
+        }
+        
+        var context = ContextInfo()
+        context.applicationName = frontApp.localizedName ?? "Unknown"
+        context.applicationType = analyzeApplicationType(context.applicationName)
+        context.contextType = analyzeContextType("", appType: context.applicationType)
+        context.selectedText = ""
+        
+        return context
+    }
+    
+    /// Quick application type analysis
+    private func analyzeApplicationType(_ appName: String) -> ApplicationType {
+        let lowercased = appName.lowercased()
+        
+        if lowercased.contains("code") || lowercased.contains("xcode") || 
+           lowercased.contains("cursor") || lowercased.contains("vim") {
+            return .codeEditor
+        } else if lowercased.contains("text") || lowercased.contains("edit") {
+            return .textEditor
+        } else if lowercased.contains("safari") || lowercased.contains("chrome") || 
+                  lowercased.contains("firefox") {
+            return .browser
+        } else if lowercased.contains("terminal") || lowercased.contains("iterm") {
+            return .terminal
+        }
+        
+        return .other
+    }
+    
+    /// Quick context type analysis
+    private func analyzeContextType(_ text: String, appType: ApplicationType) -> ContextType {
+        if appType == .codeEditor {
+            if text.trimmingCharacters(in: .whitespacesAndNewlines).hasPrefix("//") ||
+               text.trimmingCharacters(in: .whitespacesAndNewlines).hasPrefix("#") ||
+               text.contains("/*") {
+                return .codeComment
+            }
+            return .codeWriting
+        } else if appType == .terminal {
+            return .terminalCommand
+        }
+        
+        return .generalText
     }
     
     private func checkModifiers(flags: CGEventFlags) -> Bool {
         let requiredFlags: CGEventFlags = [.maskCommand, .maskShift]
-        
-        // Check if required modifiers are pressed
-        let hasRequired = requiredFlags.isSubset(of: flags)
-        
-        // Check if unwanted modifiers are pressed
-        let unwantedFlags: CGEventFlags = [.maskControl, .maskAlternate]
-        let hasUnwanted = !unwantedFlags.intersection(flags).isEmpty
-        
-        return hasRequired && !hasUnwanted
-    }
-    
-    private func handleHotkeyPress() {
-        print("Hotkey pressed: ⌘+Shift+Space")
-        // This will be connected to the main app logic
-        NotificationCenter.default.post(name: .hotkeyPressed, object: nil)
-    }
-    
-    // MARK: - Diagnostics
-    
-    func getDiagnostics() -> String {
-        var diagnostics = "🔍 Whizr Diagnostics:\n"
-        diagnostics += "- Event Tap: \(eventTap != nil ? "Active" : "Inactive")\n"
-        diagnostics += "- Run Loop Source: \(runLoopSource != nil ? "Active" : "Inactive")\n"
-        diagnostics += "- Listening: \(isListening)\n"
-        diagnostics += "- Memory Usage: \(String(format: "%.1fMB", Double(MemoryUsage.getUsage()) / 1024 / 1024))\n"
-        return diagnostics
+        let maskedFlags = flags.intersection([.maskCommand, .maskShift, .maskAlternate, .maskControl])
+        return maskedFlags == requiredFlags
     }
 }
 

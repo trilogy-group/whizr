@@ -169,9 +169,19 @@ Whizr works with all macOS applications that support text input, including:
 
 ### Menu Bar Icon Missing
 
-1. Check that the app is running (look for Whizr in Activity Monitor)
-2. Restart the app
-3. Check macOS menu bar settings
+This is a common issue, especially after hibernation/sleep:
+
+1. **After hibernation/sleep**: The menu bar icon may disappear but the app continues running
+   - The hotkey (⌘+Shift+Space) will still work
+   - Click "Refresh Menu Bar Icon" in the app menu to restore it
+   - Or restart the app completely
+
+2. **General troubleshooting**:
+   - Check that the app is running (look for Whizr in Activity Monitor)
+   - Restart the app if the refresh button doesn't work
+   - Check macOS menu bar settings in System Settings
+
+**Why this happens**: macOS `MenuBarExtra` items sometimes don't properly re-register after system sleep/wake cycles. The app includes automatic detection and manual refresh options to handle this.
 
 ## Contributing
 
